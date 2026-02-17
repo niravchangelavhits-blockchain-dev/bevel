@@ -28,10 +28,10 @@
     namespace: "{{ org.name | lower }}-net"
   register: crypto_scripts_data
 
-# Get orderer tls cacert from configmap
-- name: Get orderer tls cacert from config map 
+# Get orderer tls cacert from configmap (use orderer org's kubeconfig for cross-cluster)
+- name: Get orderer tls cacert from config map
   kubernetes.core.k8s_info:
-    kubeconfig: "{{ kubernetes.config_file }}"
+    kubeconfig: "{{ (network.organizations | selectattr('name','equalto', org.orderer_org) | first).k8s.config_file }}"
     kind: ConfigMap
     name: "orderer-tls-cacert"
     namespace: "{{ org.orderer_org | lower }}-net"
