@@ -28,7 +28,6 @@
   delay: 30
   until: component_data.resources|length > 0 and ((component_data.resources[0].status.phase is defined and component_data.resources[0].status.phase == "Succeeded") or (component_data.resources[0].status.succeeded is defined and component_data.resources[0].status.succeeded == 1))
   when: component_type == "Job"
-  register: job_retry_result
 
 # Output debug message if Job creation fails after retries
 - name: Debug information for job {{ component_name }} failure
@@ -80,7 +79,6 @@
   delay: "{{ delay | default(30) }}"
   until: component_data.resources|length > 0
   when: component_type == "Pod"
-  register: pod_retry_result
 
 # Output debug message if Pod creation fails after retries
 - name: Debug information for pod {{ component_name }} failure
