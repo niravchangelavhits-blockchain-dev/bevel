@@ -37,10 +37,10 @@ spec:
         externalUrlSuffix: pc1.nirav.com
 
     storage:
-      provisioner: "rancher.io/local-path"
       size: 512Mi
-      reclaimPolicy: "Delete" 
+      reclaimPolicy: "Delete"
       volumeBindingMode: WaitForFirstConsumer
+      provisioner: "rancher.io/local-path"
       allowedTopologies:
         enabled: false
 
