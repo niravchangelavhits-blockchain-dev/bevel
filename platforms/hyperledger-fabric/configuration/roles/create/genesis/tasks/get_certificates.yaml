@@ -7,10 +7,10 @@
   loop_control:
     loop_var: peer
 
-# Get admin msp certificates from secret
+# Get admin msp certificates from secret (use peer org's kubeconfig for cross-cluster)
 - name: Get admin msp certificates from secret
   kubernetes.core.k8s_info:
-    kubeconfig: "{{ org.k8s.config_file }}"
+    kubeconfig: "{{ organization.k8s.config_file }}"
     kind: Secret
     name: "admin-msp"
     namespace: "{{ org_name }}-net"
