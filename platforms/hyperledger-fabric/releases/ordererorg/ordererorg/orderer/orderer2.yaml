@@ -38,8 +38,9 @@ spec:
 
     storage:
       size: 512Mi
-      reclaimPolicy: "Delete" 
-      volumeBindingMode: 
+      reclaimPolicy: "Delete"
+      volumeBindingMode: WaitForFirstConsumer
+      provisioner: "rancher.io/local-path"
       allowedTopologies:
         enabled: false
 
