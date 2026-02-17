@@ -40,7 +40,7 @@ spec:
       provisioner: "rancher.io/local-path"
       size: 512Mi
       reclaimPolicy: "Delete" 
-      volumeBindingMode: 
+      volumeBindingMode: WaitForFirstConsumer
       allowedTopologies:
         enabled: false
 
