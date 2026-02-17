@@ -1,0 +1,117 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: peer0
+  namespace: org2-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: peer0
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-dev
+        namespace: flux-dev
+      chart: platforms/hyperledger-fabric/charts/fabric-peernode    
+  values:
+    global:
+      version: 2.5.4
+      serviceAccountName: vault-auth
+      cluster:
+        provider: minikube
+        cloudNativeServices: false
+      vault:
+        type: hashicorp
+        network: fabric
+        address: http://192.168.1.4:8200
+        authPath: devorg2
+        secretEngine: secretsv2
+        secretPrefix: "data/devorg2"
+        role: vault-role
+        tls: false
+      proxy:
+        provider: haproxy
+        externalUrlSuffix: pc3.rashmi.com
+
+    storage:
+      enabled: True
+      peer: 512Mi
+      couchdb: 512Mi
+      reclaimPolicy: "Delete" 
+      volumeBindingMode: Immediate 
+      allowedTopologies:
+        enabled: false
+
+    certs:
+      generateCertificates: true
+      orgData:
+        caAddress: ca.org2-net.pc3.rashmi.com
+        caAdminUser: org2-admin
+        caAdminPassword: org2-adminpw
+        orgName: org2
+        type: peer
+        componentSubject: "O=Org2,OU=Org2,L=32.78/-96.80/Dallas,C=US"
+
+
+      settings:
+        createConfigMaps: True
+        refreshCertValue: false
+        addPeerValue: false
+        removeCertsOnDelete: true
+        removeOrdererTlsOnDelete: true
+
+    image:
+      couchdb: ghcr.io/hyperledger/bevel-fabric-couchdb
+      peer: ghcr.io/hyperledger/bevel-fabric-peer
+      alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
+      pullSecret: regcred
+
+    peer:
+      gossipPeerAddress: peer0.org2-net.pc3.rashmi.com:443
+      logLevel: info
+      localMspId: org2MSP
+      tlsStatus: true
+      cliEnabled: True
+      ordererAddress: orderer1.ordererorg-net.pc1.nirav.com:443
+      builder: hyperledger/fabric-ccenv
+      couchdb:
+        username: org2-user
+        password: org2-userpw
+      mspConfig:
+        organizationalUnitIdentifiers:
+        nodeOUs:
+          clientOUIdentifier: client
+          peerOUIdentifier: peer
+          adminOUIdentifier: admin
+          ordererOUIdentifier: orderer
+      serviceType: ClusterIP 
+      loadBalancerType: ""
+      ports:
+        grpc:
+          clusterIpPort: 7051
+        events:
+          clusterIpPort: 7053
+        couchdb:
+          clusterIpPort: 5984
+        metrics:
+          enabled: False
+          clusterIpPort: 9443    
+      resources:
+        limits:
+          memory: 1Gi
+          cpu: 1
+        requests:
+          memory: 512M
+          cpu: 0.25
+      upgrade: False
+      healthCheck: 
+        retries: 20
+        sleepTimeAfterError: 15
+
+    labels:
+      service:
+      pvc:
+      deployment:
