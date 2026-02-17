@@ -40,7 +40,7 @@ spec:
       enabled: True
       peer: 512Mi
       couchdb: 512Mi
-      reclaimPolicy: "Delete" 
+      reclaimPolicy: "Delete"
       volumeBindingMode: WaitForFirstConsumer
       provisioner: "rancher.io/local-path"
       allowedTopologies:
@@ -58,7 +58,7 @@ spec:
 
 
       settings:
-        createConfigMaps: False
+        createConfigMaps: True
         refreshCertValue: false
         addPeerValue: false
         removeCertsOnDelete: true
