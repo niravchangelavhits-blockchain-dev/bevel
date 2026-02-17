@@ -57,7 +57,7 @@ spec:
 
 
       settings:
-        createConfigMaps: True
+        createConfigMaps: False
         refreshCertValue: false
         addPeerValue: false
         removeCertsOnDelete: true
