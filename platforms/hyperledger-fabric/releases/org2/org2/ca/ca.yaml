@@ -37,6 +37,7 @@ spec:
         externalUrlSuffix: pc3.rashmi.com
 
     storage:
+      provisioner: "rancher.io/local-path"
       size: 512Mi
       reclaimPolicy: "Delete"
       volumeBindingMode: Immediate
