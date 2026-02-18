@@ -57,7 +57,8 @@ metadata:
   name: {{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   annotations:
-    ingress.kubernetes.io/ssl-passthrough: "true"  
+    haproxy-ingress.github.io/ssl-passthrough: "true"
+    kubernetes.io/ingress.class: haproxy
 spec:
   ingressClassName: "haproxy"
   rules:
