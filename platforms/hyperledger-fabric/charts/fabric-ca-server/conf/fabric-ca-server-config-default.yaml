@@ -464,7 +464,7 @@ cfg:
 ###############################################################################
 operations:
     # host and port for the operations server
-    listenAddress: 127.0.0.1:9443
+    listenAddress: 0.0.0.0:9443
 
     # TLS configuration for the operations endpoint
     tls:
@@ -493,7 +493,7 @@ operations:
 ###############################################################################
 metrics:
     # statsd, prometheus, or disabled
-    provider: disabled
+    provider: prometheus
 
     # statsd configuration
     statsd:
