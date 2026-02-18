@@ -232,6 +232,8 @@ spec:
           value: /var/hyperledger/fabric-ca-server/db/fabric-ca-server.db
         - name: FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS
           value: 0.0.0.0:9443
+        - name: FABRIC_CA_SERVER_METRICS_PROVIDER
+          value: prometheus
         volumeMounts:
         - name: certificates
           mountPath: /etc/hyperledger/fabric-ca-server-config
