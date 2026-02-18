@@ -28,7 +28,6 @@
   shell: |
     {{ bin_install_dir }}/flux bootstrap git \
     --url={{ git_url }} \
-    --components-extra=image-reflector-controller,image-automation-controller \
     --branch={{ git_branch }} \
     --username={{ git_username }} \
     --password={{ git_password }} \
@@ -47,7 +46,6 @@
   shell: |
     yes | {{ bin_install_dir }}/flux bootstrap git \
     --url={{ git_url }} \
-    --components-extra=image-reflector-controller,image-automation-controller \
     --branch={{ git_branch }} \
     --path={{ git_path }} \
     --private-key-file={{ git_key }} \
