@@ -18,6 +18,7 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 data:
   CORE_VM_ENDPOINT: unix:///host/var/run/docker.sock
+  DOCKER_API_VERSION: "1.44"
   CORE_PEER_ID: {{ .Release.Name }}.{{ .Release.Namespace }}
   FABRIC_LOGGING_SPEC: "grpc=debug:{{ .Values.peer.logLevel }}"
   CORE_LEDGER_STATE_STATEDATABASE: CouchDB
