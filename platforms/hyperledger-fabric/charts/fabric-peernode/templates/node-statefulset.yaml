@@ -265,7 +265,11 @@ spec:
           then
             peer node upgrade-dbs
           fi
-          peer node start         
+          # Wait for Docker API proxy socket (rewrites v1.25 -> unversioned for Docker 27+ compat)
+          i=0; while [ ! -S /proxy/docker.sock ] && [ $i -lt 30 ]; do
+            echo "Waiting for Docker proxy socket... $i"; sleep 1; i=$((i+1))
+          done
+          peer node start
         ports:
         - name: grpc
           containerPort: 7051
@@ -293,6 +297,8 @@ spec:
           readOnly: true
         - name: builders-config
           mountPath: /builders/external
+        - name: proxy-socket
+          mountPath: /proxy
         resources:
           requests:
             memory: {{ .Values.peer.resources.requests.memory }}
@@ -300,6 +306,55 @@ spec:
           limits:
             memory: {{ .Values.peer.resources.limits.memory }}
             cpu: {{ .Values.peer.resources.limits.cpu }}
+      # Docker API version proxy: rewrites /v1.25/ -> / to fix Fabric+Docker 27+ compat
+      - name: docker-api-proxy
+        image: python:3.11-slim
+        imagePullPolicy: IfNotPresent
+        command: ["python3", "-u", "-c"]
+        args:
+        - |
+          import socket, threading, os, sys
+          DOCKER='/host/var/run/docker.sock'
+          PROXY='/proxy/docker.sock'
+          def fwd(s, d, rw=False):
+              buf=b''; done=False
+              while True:
+                  try: x=s.recv(65536)
+                  except: break
+                  if not x: break
+                  if rw and not done:
+                      buf+=x
+                      if b'\r\n\r\n' in buf:
+                          done=True; buf=buf.replace(b'/v1.25/',b'/')
+                          try: d.sendall(buf); buf=b''
+                          except: break
+                      continue
+                  try: d.sendall(x)
+                  except: break
+              try: d.shutdown(socket.SHUT_WR)
+              except: pass
+          def handle(c):
+              s=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+              try: s.connect(DOCKER)
+              except: c.close(); return
+              ts=[threading.Thread(target=fwd,args=(c,s,True)),threading.Thread(target=fwd,args=(s,c))]
+              for t in ts: t.daemon=True; t.start()
+              for t in ts: t.join()
+              c.close(); s.close()
+          if os.path.exists(PROXY): os.remove(PROXY)
+          p=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM)
+          p.bind(PROXY); os.chmod(PROXY,0o666); p.listen(50)
+          print('Docker API proxy ready at '+PROXY, flush=True)
+          while True:
+              try:
+                  c,_=p.accept()
+                  t=threading.Thread(target=handle,args=(c,)); t.daemon=True; t.start()
+              except Exception as e: print(e,file=sys.stderr)
+        volumeMounts:
+        - name: dockersocket
+          mountPath: /host/var/run/docker.sock
+        - name: proxy-socket
+          mountPath: /proxy
       - name: grpc-web
         image: "ghcr.io/hyperledger-labs/grpc-web:latest"
         imagePullPolicy: IfNotPresent        
@@ -341,6 +396,8 @@ spec:
           - key: ca.crt.pem
             path: ca-certificates.crt
       {{ end }}
+      - name: proxy-socket
+        emptyDir: {}
       - name: builders-config
         configMap:
           name: {{ .Release.Name }}-builders-config
