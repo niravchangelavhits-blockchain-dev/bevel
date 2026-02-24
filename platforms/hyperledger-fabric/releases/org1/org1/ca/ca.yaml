@@ -34,7 +34,7 @@ spec:
         tls: false
       proxy:
         provider: haproxy
-        externalUrlSuffix: pc2.rashmi.com
+        externalUrlSuffix: pc2.jigs.com
 
     storage:
       size: 512Mi
