@@ -18,7 +18,7 @@ spec:
       chart: platforms/hyperledger-fabric/charts/fabric-orderernode
   values:
     global:
-      version: 2.5.4
+      version: 3.0.0
       serviceAccountName: vault-auth
       cluster:
         provider: minikube
@@ -62,7 +62,7 @@ spec:
         removeOrdererTlsOnDelete: true
 
     image:
-      orderer: ghcr.io/hyperledger/bevel-fabric-orderer
+      orderer: hyperledger/fabric-orderer
       alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
       pullSecret: regcred
 
