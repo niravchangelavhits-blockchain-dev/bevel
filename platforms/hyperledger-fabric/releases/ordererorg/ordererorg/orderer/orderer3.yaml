@@ -18,7 +18,7 @@ spec:
       chart: platforms/hyperledger-fabric/charts/fabric-orderernode
   values:
     global:
-      version: 2.5.4
+      version: 3.0.0
       serviceAccountName: vault-auth
       cluster:
         provider: minikube
@@ -67,7 +67,7 @@ spec:
       pullSecret: regcred
 
     orderer:
-      consensus: raft
+      consensus: bft
       logLevel: info
       localMspId: ordererorgMSP
       tlsStatus: true
