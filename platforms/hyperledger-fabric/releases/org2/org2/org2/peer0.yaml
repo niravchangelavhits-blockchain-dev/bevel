@@ -18,7 +18,7 @@ spec:
       chart: platforms/hyperledger-fabric/charts/fabric-peernode    
   values:
     global:
-      version: 3.0.0
+      version: 2.5.4
       serviceAccountName: vault-auth
       cluster:
         provider: minikube
