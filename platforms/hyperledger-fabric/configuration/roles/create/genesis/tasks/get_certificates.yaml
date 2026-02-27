@@ -22,3 +22,32 @@
     dest: "{{ files_loc }}/{{ org_name }}.json"
   vars:
     files_loc: "{{ playbook_dir }}/../../../{{ charts_dir }}/fabric-genesis/files"
+
+# For BFT v3.x: fetch orderer MSP signing certs from cross-org orderer organizations
+# These are needed for ConsenterMapping in configtx_3_0.tpl
+- name: Get orderer MSP signing cert for BFT ConsenterMapping (cross-org orderers)
+  kubernetes.core.k8s_info:
+    kubeconfig: "{{ organization.k8s.config_file }}"
+    kind: Secret
+    name: "{{ orderer_item.name }}-msp"
+    namespace: "{{ org_name }}-net"
+  register: orderer_msp_cert_data
+  loop: "{{ organization.services.orderers | default([]) }}"
+  loop_control:
+    loop_var: orderer_item
+  when:
+    - "'3.' in network.version"
+    - organization.services.orderers is defined
+    - organization.services.orderers | length > 0
+
+- name: Save orderer MSP signing cert locally for BFT genesis ConsenterMapping
+  copy:
+    content: "{{ item.resources[0] | to_nice_json }}"
+    dest: "{{ files_loc }}/{{ item.orderer_item.name }}-orderer-msp.json"
+  vars:
+    files_loc: "{{ playbook_dir }}/../../../{{ charts_dir }}/fabric-genesis/files"
+  loop: "{{ orderer_msp_cert_data.results | default([]) }}"
+  when:
+    - "'3.' in network.version"
+    - item.resources is defined
+    - item.resources | length > 0

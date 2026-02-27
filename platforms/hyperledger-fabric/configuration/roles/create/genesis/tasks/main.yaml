@@ -39,8 +39,24 @@
   loop: "{{ network['organizations'] }}"
   loop_control:
     loop_var: organization
-  when: 
+  when:
     - organization.services.peers is defined and organization.services.peers | length > 0
+    - organization.name != org.name
+
+# For BFT v3.x: fetch orderer MSP signing certs from orderer organizations (cross-org)
+# Local orderer org MSP signcerts are fetched directly from Vault in the genesis job
+- name: Fetch orderer MSP signing certs for BFT ConsenterMapping (cross-org)
+  include_tasks: get_certificates.yaml
+  vars:
+    charts_dir: "{{ org.gitops.chart_source }}"
+    org_name: "{{ organization.name | lower }}"
+    peers: []
+  loop: "{{ network['organizations'] }}"
+  loop_control:
+    loop_var: organization
+  when:
+    - "'3.' in network.version"
+    - organization.services.orderers is defined and organization.services.orderers | length > 0
     - organization.name != org.name
 
 # Get channel_name
