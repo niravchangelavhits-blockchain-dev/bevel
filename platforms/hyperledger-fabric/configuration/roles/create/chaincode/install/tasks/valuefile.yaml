@@ -64,5 +64,5 @@
     kubernetes: "{{ org.k8s }}"
     component_name: "installchaincode-{{ peer.name }}-{{ chaincode.name }}-{{ chaincode.version }}"
   when: 
-    - peer.chaincodes is defined and '2.' in network.version
+    - peer.chaincodes is defined and ('2.' in network.version or '3.' in network.version)
     - peer.name == 'peer0'

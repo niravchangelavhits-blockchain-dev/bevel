@@ -30,7 +30,7 @@ data:
   NETWORK_VERSION: {{ .Values.global.version }}
 
 ---
-{{- if ne (.Values.global.version | trunc 3) "2.5" }}
+{{- if and (ne (.Values.global.version | trunc 3) "2.5") (ne (.Values.global.version | trunc 3) "3.0") }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

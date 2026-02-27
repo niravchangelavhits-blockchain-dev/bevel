@@ -59,7 +59,7 @@ spec:
           items:
             - key: cacert
               path: orderer.crt
-      {{- if ne (.Values.global.version | trunc 3) "2.5" }}
+      {{- if and (ne (.Values.global.version | trunc 3) "2.5") (ne (.Values.global.version | trunc 3) "3.0") }}
       - name: anchorpeer-artifacts
         configMap:
           name: {{ .Release.Name }}-anchor-artifacts
@@ -165,7 +165,7 @@ spec:
         - |-
           #!/usr/bin/env sh
         
-          version2_5=`echo $NETWORK_VERSION | grep -c 2.5`
+          version2_5=`echo $NETWORK_VERSION | grep -cE '2\.5|3\.'`
 
           if [ $version2_5 = 1 ]
           then
@@ -222,7 +222,7 @@ spec:
         - name: orderer-tls-cacert
           mountPath: /opt/gopath/src/github.com/hyperledger/fabric/orderer/tls/orderer.crt
           subPath: orderer.crt
-        {{- if ne (.Values.global.version | trunc 3) "2.5" }}
+        {{- if and (ne (.Values.global.version | trunc 3) "2.5") (ne (.Values.global.version | trunc 3) "3.0") }}
         - name: anchorpeer-artifacts
           mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
           readOnly: true

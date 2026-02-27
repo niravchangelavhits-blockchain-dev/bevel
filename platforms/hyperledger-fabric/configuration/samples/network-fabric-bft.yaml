@@ -1,0 +1,311 @@
+##############################################################################################
+#  Copyright Accenture. All Rights Reserved.
+#
+#  SPDX-License-Identifier: Apache-2.0
+##############################################################################################
+
+---
+# yaml-language-server: $schema=../../../../platforms/network-schema.json
+# This is a sample configuration file for setting up Fabric v3.0 network with BFT (SmartBFT) consensus.
+# BFT requires a minimum of 4 orderers (n >= 3f+1, f=1 means n >= 4).
+network:
+  # Network level configuration specifies the attributes required for each organization
+  # to join an existing network.
+  type: fabric
+  version: 3.0.0
+
+  #Environment section for Kubernetes setup
+  env:
+    type: "dev"              # tag for the environment. Important to run multiple flux on single cluster
+    proxy: haproxy                  # values can be 'haproxy' or 'none'
+    retry_count: 20                 # Retry count for the checks
+    external_dns: enabled           # Should be enabled if using external-dns for automatic route configuration
+    labels:
+      service: {}
+      deployment: {}
+      pvc: {}
+
+  # Docker registry details where images are stored. This will be used to create k8s secrets
+  # Please ensure all required images are built and stored in this registry.
+  # Do not check-in docker_password.
+  docker:
+    url: "ghcr.io/hyperledger"
+    username: "docker_username"
+    password: "docker_password"
+
+  # BFT (Byzantine Fault Tolerance) consensus using SmartBFT
+  # Requires minimum 4 orderers for fault tolerance (n >= 3f+1, f=1)
+  consensus:
+    name: BFT
+
+  # Remote connection information for orderers
+  # BFT requires minimum 4 orderers for fault tolerance
+  orderers:
+    - orderer:
+      type: orderer
+      name: orderer1
+      org_name: ordererorg
+      uri: orderer1.ordererorg-net.example.com:443
+    - orderer:
+      type: orderer
+      name: orderer2
+      org_name: ordererorg
+      uri: orderer2.ordererorg-net.example.com:443
+    - orderer:
+      type: orderer
+      name: orderer3
+      org_name: ordererorg
+      uri: orderer3.ordererorg-net.example.com:443
+    - orderer:
+      type: orderer
+      name: orderer4
+      org_name: ordererorg
+      uri: orderer4.ordererorg-net.example.com:443
+
+  # The channels defined for a network with participating peers in each channel
+  channels:
+  - channel:
+    consortium: BFTConsortium
+    channel_name: AllChannel
+    channel_status: new
+    osn_creator_org:
+      name: ordererorg
+    chaincodes:
+      - "chaincode_name"
+    orderers:
+      - ordererorg
+    participants:
+    - organization:
+      name: org1
+      type: creator       # creator organization will create the channel and instantiate chaincode
+      org_status: new
+      peers:
+      - peer:
+        name: peer0
+        gossipPeerAddress: peer0.org1-net.example.com:443
+        peerAddress: peer0.org1-net.example.com:443
+    - organization:
+      name: org2
+      type: joiner
+      org_status: new
+      peers:
+      - peer:
+        name: peer0
+        gossipPeerAddress: peer0.org2-net.example.com:443
+        peerAddress: peer0.org2-net.example.com:443
+
+  # Allows specification of one or many organizations that will be connecting to a Fabric network.
+  organizations:
+
+    # Specification for the orderer organization
+    - organization:
+      name: ordererorg
+      country: US
+      state: California
+      location: San Francisco
+      subject: "O=Orderer,L=51 Borough,C=US"
+      type: orderer
+      external_url_suffix: example.com
+
+      cloud_provider: aws   # Options: aws, azure, gcp, digitalocean, minikube
+
+      # Kubernetes cluster deployment variables.
+      k8s:
+        region: "us-east-1"
+        context: "orderer-cluster"
+        config_file: "/home/user/.kube/orderer-cluster.yaml"
+
+      # Hashicorp Vault server address and root-token.
+      vault:
+        url: "http://vault.example.com:8200"
+        root_token: "vault-root-token"
+        secret_path: "secretsv2"
+
+      # Git Repo details for this organization.
+      gitops:
+        git_protocol: "https"
+        git_url: "https://github.com/YOUR_ORG/bevel-gitops.git"
+        branch: "main"
+        release_dir: "platforms/hyperledger-fabric/releases/dev"
+        chart_source: "platforms/hyperledger-fabric/charts"
+        git_repo: "github.com/YOUR_ORG/bevel-gitops.git"
+        username: "git_username"
+        password: "git_access_token"
+        email: "git@example.com"
+        private_key: "/home/user/.ssh/gitops"
+        component_dir: "platforms/hyperledger-fabric/releases/dev"
+
+      services:
+        ca:
+          name: ca
+          subject: "/C=US/ST=California/L=SanFrancisco/O=Orderer/CN=ca.ordererorg-net.example.com"
+          type: ca
+          grpc:
+            port: 7054
+
+        orderers:
+          - orderer:
+            name: orderer1
+            type: orderer
+            consensus: BFT
+            grpc:
+              port: 7050
+            metrics:
+              enabled: true
+              host: orderer1.ordererorg-net.example.com
+              port: 9443
+
+          - orderer:
+            name: orderer2
+            type: orderer
+            consensus: BFT
+            grpc:
+              port: 7050
+            metrics:
+              enabled: true
+              host: orderer2.ordererorg-net.example.com
+              port: 9443
+
+          - orderer:
+            name: orderer3
+            type: orderer
+            consensus: BFT
+            grpc:
+              port: 7050
+            metrics:
+              enabled: true
+              host: orderer3.ordererorg-net.example.com
+              port: 9443
+
+          - orderer:
+            name: orderer4
+            type: orderer
+            consensus: BFT
+            grpc:
+              port: 7050
+            metrics:
+              enabled: true
+              host: orderer4.ordererorg-net.example.com
+              port: 9443
+
+    # Specification for the first peer organization
+    - organization:
+      name: org1
+      country: US
+      state: California
+      location: San Francisco
+      subject: "O=Org1,L=51 Borough,C=US"
+      type: peer
+      external_url_suffix: example.com
+
+      cloud_provider: aws
+
+      k8s:
+        region: "us-east-1"
+        context: "org1-cluster"
+        config_file: "/home/user/.kube/org1-cluster.yaml"
+
+      vault:
+        url: "http://vault-org1.example.com:8200"
+        root_token: "vault-root-token"
+        secret_path: "secretsv2"
+
+      gitops:
+        git_protocol: "https"
+        git_url: "https://github.com/YOUR_ORG/bevel-gitops.git"
+        branch: "main"
+        release_dir: "platforms/hyperledger-fabric/releases/dev"
+        chart_source: "platforms/hyperledger-fabric/charts"
+        git_repo: "github.com/YOUR_ORG/bevel-gitops.git"
+        username: "git_username"
+        password: "git_access_token"
+        email: "git@example.com"
+        private_key: "/home/user/.ssh/gitops"
+        component_dir: "platforms/hyperledger-fabric/releases/dev"
+
+      services:
+        ca:
+          name: ca
+          subject: "/C=US/ST=California/L=SanFrancisco/O=Org1/CN=ca.org1-net.example.com"
+          type: ca
+          grpc:
+            port: 7054
+
+        peers:
+          - peer:
+            name: peer0
+            type: anchor    # anchor/non-anchor
+            gossippeeraddress: peer0.org1-net.example.com:443
+            peerAddress: peer0.org1-net.example.com:443
+            cli: enabled    # Creates a peer-cli pod
+            grpc:
+              port: 7051
+            events:
+              port: 7053
+            couchdb:
+              port: 5984
+            metrics:
+              enabled: true
+              host: peer0.org1-net.example.com
+              port: 9443
+
+    # Specification for the second peer organization
+    - organization:
+      name: org2
+      country: US
+      state: California
+      location: San Francisco
+      subject: "O=Org2,L=51 Borough,C=US"
+      type: peer
+      external_url_suffix: example.com
+
+      cloud_provider: aws
+
+      k8s:
+        region: "us-east-1"
+        context: "org2-cluster"
+        config_file: "/home/user/.kube/org2-cluster.yaml"
+
+      vault:
+        url: "http://vault-org2.example.com:8200"
+        root_token: "vault-root-token"
+        secret_path: "secretsv2"
+
+      gitops:
+        git_protocol: "https"
+        git_url: "https://github.com/YOUR_ORG/bevel-gitops.git"
+        branch: "main"
+        release_dir: "platforms/hyperledger-fabric/releases/dev"
+        chart_source: "platforms/hyperledger-fabric/charts"
+        git_repo: "github.com/YOUR_ORG/bevel-gitops.git"
+        username: "git_username"
+        password: "git_access_token"
+        email: "git@example.com"
+        private_key: "/home/user/.ssh/gitops"
+        component_dir: "platforms/hyperledger-fabric/releases/dev"
+
+      services:
+        ca:
+          name: ca
+          subject: "/C=US/ST=California/L=SanFrancisco/O=Org2/CN=ca.org2-net.example.com"
+          type: ca
+          grpc:
+            port: 7054
+
+        peers:
+          - peer:
+            name: peer0
+            type: anchor
+            gossippeeraddress: peer0.org2-net.example.com:443
+            peerAddress: peer0.org2-net.example.com:443
+            cli: enabled
+            grpc:
+              port: 7051
+            events:
+              port: 7053
+            couchdb:
+              port: 5984
+            metrics:
+              enabled: true
+              host: peer0.org2-net.example.com
+              port: 9443

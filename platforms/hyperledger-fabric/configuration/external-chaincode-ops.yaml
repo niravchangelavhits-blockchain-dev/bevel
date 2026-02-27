@@ -178,7 +178,7 @@
         participants: "{{ item.participants }}"
         docker_url: "{{ network.docker.url }}"
       loop: "{{ network['channels'] }}"
-      when: participants is defined and '2.' in network.version
+      when: participants is defined and ('2.' in network.version or '3.' in network.version)
 
     ############################################################################################
     # This task commits the desired approved chaincode
@@ -190,7 +190,7 @@
         docker_url: "{{ network.docker.url }}"
         approvers: "{{ item.endorsers }}"
       loop: "{{ network['channels'] }}"
-      when: add_new_org == 'false' and '2.' in network.version
+      when: add_new_org == 'false' and ('2.' in network.version or '3.' in network.version)
 
     # This task invokes chaincode after the chaincode has been commited in v2 and
     # after chaincode installation for the new organization to be added in existing network
@@ -202,7 +202,7 @@
         docker_url: "{{ network.docker.url }}"
         approvers: "{{ item.endorsers | default('', true) }}"
       loop: "{{ network['channels'] }}"
-      when: add_new_org == 'true' or '2.' in network.version    
+      when: add_new_org == 'true' or '2.' in network.version or '3.' in network.version
 
   vars: #These variables can be overriden from the command line
     privilege_escalate: false           #Default to NOT escalate to root privledges

@@ -161,7 +161,7 @@
       loop: "{{ network.organizations }}"
       loop_control:
         loop_var: neworg
-      when: neworg.type == 'orderer' and neworg.org_status == 'new' and '2.5.' not in network.version
+      when: neworg.type == 'orderer' and neworg.org_status == 'new' and '2.5.' not in network.version and '3.' not in network.version
 
     # This role creates value file for zk-kafka (if kafka consensus is chosen) and orderer
     - name: Create all orderers
@@ -196,7 +196,7 @@
       loop: "{{ network.organizations }}"
       loop_control:
         loop_var: neworg
-      when: neworg.type == 'orderer' and neworg.org_status == 'new' and '2.5.' not in network.version
+      when: neworg.type == 'orderer' and neworg.org_status == 'new' and '2.5.' not in network.version and '3.' not in network.version
 
     # This role adds the new org to the existing chnanel and updates the block with the application channel    
     - name: "Modify the application channel with tls and address information of new orderer"

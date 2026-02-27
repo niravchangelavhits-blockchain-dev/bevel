@@ -63,7 +63,7 @@ spec:
           - key: ca.crt.pem
             path: ca-certificates.crt  # curl expects certs to be in /etc/ssl/certs/ca-certificates.crt
       {{ end  }}
-      {{- if ne ($.Values.global.version | trunc 3) "2.5" }}
+      {{- if and (ne ($.Values.global.version | trunc 3) "2.5") (ne ($.Values.global.version | trunc 3) "3.0") }}
       - name: {{ .Release.Name }}-genesis-volume
         configMap:
           name: syschannel-genesis
@@ -300,7 +300,7 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: /var/hyperledger/production/orderer
-        {{- if ne ($.Values.global.version | trunc 3) "2.5" }}
+        {{- if and (ne ($.Values.global.version | trunc 3) "2.5") (ne ($.Values.global.version | trunc 3) "3.0") }}
         - name: {{ .Release.Name }}-genesis-volume
           mountPath: /var/hyperledger/orderer/genesis
           readOnly: true

@@ -97,6 +97,8 @@ spec:
             value: "{{ $.Values.global.vault.type }}"
           - name: NETWORK_VERSION
             value: "{{ $.Values.global.version }}"
+          - name: CONSENSUS_TYPE
+            value: "{{ $.Values.consensus }}"
           - name: PROXY
             value: {{ .Values.global.proxy.provider }}
           - name: EXTERNAL_URL_SUFFIX
@@ -160,6 +162,15 @@ spec:
 
                 echo "${TLS_SERVER_CERT}" > ${path}/orderers/${KEY}/tls/server.crt
               }
+              function getOrdererMSPSignCerts {
+                KEY=$1
+                path=$2
+                mkdir -p ${path}/orderers/${KEY}/msp/signcerts
+                echo "Getting MSP signcerts from Vault for BFT ConsenterMapping."
+                vaultBevelFunc "readJson" "${VAULT_SECRET_ENGINE}/${VAULT_SECRET_PREFIX}/orderers/${KEY}-msp"
+                MSP_SIGNCERT=$(echo ${VAULT_SECRET} | jq -r '.["signcerts"]')
+                echo "${MSP_SIGNCERT}" > ${path}/orderers/${KEY}/msp/signcerts/server.crt
+              }
               function writeSafeSecret {
                 key=$1
                 file=$2
@@ -219,6 +230,19 @@ spec:
                 else
                   TLS_SERVER_CERT=$(echo "$KUBENETES_SECRET" | jq -r '.data.servercrt'  | base64 -d)
                   echo "${TLS_SERVER_CERT}" > ${path}/orderers/${key}/tls/server.crt
+                fi
+              }
+              function getOrdererMSPSignCerts {
+                key=$1
+                path=$2
+                mkdir -p ${path}/orderers/${key}/msp/signcerts
+                KUBENETES_SECRET=$(kubectl get secret ${key}-msp --namespace ${COMPONENT_NAME} -o json)
+                if [ "$KUBENETES_SECRET" = "" ]; then
+                  echo "MSP certificates absent in kubernetes secrets"
+                  exit 1
+                else
+                  MSP_SIGNCERT=$(echo "$KUBENETES_SECRET" | jq -r '.data.signcerts' | base64 -d)
+                  echo "${MSP_SIGNCERT}" > ${path}/orderers/${key}/msp/signcerts/server.crt
                 fi
               }
 
@@ -290,15 +314,20 @@ spec:
                 echo "$CONFIG_FILE" | base64 -d > ${OUTPUT_PATH_PEER}/{{ $org.name }}/orderers/{{ $orderer.name }}/tls/server.crt
               else
                 getOrdererTLSCerts {{ $orderer.name }} ${OUTPUT_PATH_PEER}/{{ $org.name }}
+                # For BFT consensus, also fetch MSP signcerts for ConsenterMapping
+                if [ "${CONSENSUS_TYPE}" = "BFT" ]; then
+                  getOrdererMSPSignCerts {{ $orderer.name }} ${OUTPUT_PATH_PEER}/{{ $org.name }}
+                fi
               fi
               {{- end }}
             {{- end }}
             {{- end }}
               cd /templates
               version2_5=`echo $NETWORK_VERSION | grep -c 2.5`
+              version3_0=`echo $NETWORK_VERSION | grep -c 3.`
               {{- if .Values.settings.generateGenesis }}
-              if [ $version2_5 = 1 ]; then
-                echo "version 2.5.x does not need syschannel genesis"
+              if [ $version2_5 = 1 ] || [ $version3_0 = 1 ]; then
+                echo "version 2.5.x/3.0.x does not need syschannel genesis"
               else
                 echo "version 2.2.x syschannel genesis"
                 configtxgen -configPath "/templates" -profile OrdererGenesis -channelID syschannel -outputBlock genesis.block
@@ -306,8 +335,8 @@ spec:
               fi
               {{- end }}
               {{- range $channel := $.Values.channels }}
-                if [ $version2_5 = 1 ]; then
-                  echo "version 2.5.x"
+                if [ $version2_5 = 1 ] || [ $version3_0 = 1 ]; then
+                  echo "version 2.5.x/3.0.x"
                   configtxgen -configPath "/templates" -profile {{ $channel.name }} -channelID {{ $channel.name }} -outputBlock {{ $channel.name }}.genesis.block
                   writeSafeSecret {{ $channel.name }}-genesis {{ $channel.name }}.genesis.block
                 else

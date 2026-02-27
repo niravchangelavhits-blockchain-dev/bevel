@@ -49,13 +49,13 @@
   loop_control:
     loop_var: peer
   when: 
-    - peer.chaincodes is defined and '2.' in network.version
+    - peer.chaincodes is defined and ('2.' in network.version or '3.' in network.version)
     - peer.name == 'peer0'
 
 # Create value file for chaincode installation for fabric version 2.2.x
 - name: "Create value file for chaincode installation for fabric version 2.2.x"
   include_tasks: nested_valuefile.yaml
-  vars:      
+  vars:
     name: "{{ org.name | lower}}"
     namespace: "{{ org.name | lower}}-net"
     component_type: "peer"
@@ -70,6 +70,6 @@
   loop: "{{ component_peers }}"
   loop_control:
     loop_var: peer
-  when: 
-    - peer.chaincodes is defined and '2.' in network.version
+  when:
+    - peer.chaincodes is defined and ('2.' in network.version or '3.' in network.version)
     - peer.name != 'peer0'

@@ -56,7 +56,7 @@
         build_path: "./build"
         docker_url: "{{ network.docker.url }}"
       loop: "{{ network['channels'] }}"
-      when: item.channel_status == 'new' and '2.5.' in network.version
+      when: item.channel_status == 'new' and ('2.5.' in network.version or '3.' in network.version)
 
     # This role creates the value file for joining channel from each participating peer
     # to the vault.
