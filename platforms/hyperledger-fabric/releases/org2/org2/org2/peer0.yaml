@@ -26,7 +26,7 @@ spec:
       vault:
         type: hashicorp
         network: fabric
-        address: http://192.168.1.4:8200
+        address: http://192.168.1.66:8200
         authPath: devorg2
         secretEngine: secretsv2
         secretPrefix: "data/devorg2"
@@ -34,7 +34,7 @@ spec:
         tls: false
       proxy:
         provider: haproxy
-        externalUrlSuffix: pc3.rashmi.com
+        externalUrlSuffix: pc3.ankit.com
 
     storage:
       enabled: True
@@ -49,7 +49,7 @@ spec:
     certs:
       generateCertificates: true
       orgData:
-        caAddress: ca.org2-net.pc3.rashmi.com
+        caAddress: ca.org2-net.pc3.ankit.com
         caAdminUser: org2-admin
         caAdminPassword: org2-adminpw
         orgName: org2
@@ -71,7 +71,7 @@ spec:
       pullSecret: regcred
 
     peer:
-      gossipPeerAddress: peer0.org2-net.pc3.rashmi.com:443
+      gossipPeerAddress: peer0.org2-net.pc3.ankit.com:443
       logLevel: info
       localMspId: org2MSP
       tlsStatus: true
