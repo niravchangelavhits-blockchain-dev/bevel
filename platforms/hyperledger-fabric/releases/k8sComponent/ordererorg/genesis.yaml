@@ -35,13 +35,13 @@ organizations:
   - name: org1
     peers:
     - name: peer0
-      peerAddress: peer0.org1-net.pc2.rashmi.com:443
+      peerAddress: peer0.org1-net.pc2.jigs.com:443
   - name: org2
     peers:
     - name: peer0
-      peerAddress: peer0.org2-net.pc3.jigs.com:443
+      peerAddress: peer0.org2-net.pc3.ankit.com:443
 
-consensus: raft
+consensus: RAFT
 
 
 channels:
