@@ -1,13 +1,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: orderer1
+  name: orderer4
   namespace: ordererorg-net
   annotations:
     fluxcd.io/automated: "false"
 spec:
   interval: 1m
-  releaseName: orderer1
+  releaseName: orderer4
   chart:
     spec:
       interval: 1m
@@ -55,7 +55,7 @@ spec:
         componentSubject: "O=OrdererOrg,OU=Orderer,L=37.77/-122.42/SanFrancisco,C=US"
 
       settings:
-        createConfigMaps: True
+        createConfigMaps: False
         refreshCertValue: false
         addPeerValue: false
         removeCertsOnDelete: true
