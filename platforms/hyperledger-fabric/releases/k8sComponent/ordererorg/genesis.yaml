@@ -41,7 +41,7 @@ organizations:
     - name: peer0
       peerAddress: peer0.org2-net.pc3.ankit.com:443
 
-consensus: RAFT
+consensus: raft
 
 
 channels:
