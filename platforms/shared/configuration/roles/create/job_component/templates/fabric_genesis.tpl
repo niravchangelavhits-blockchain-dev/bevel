@@ -63,7 +63,7 @@ organizations:
 {% endfor %}
 {% endfor %}
 
-consensus: {{ consensus.name }}
+consensus: {{ consensus.name | lower }}
 
 {% if consensus.name == 'kafka' %}
 kafka:
