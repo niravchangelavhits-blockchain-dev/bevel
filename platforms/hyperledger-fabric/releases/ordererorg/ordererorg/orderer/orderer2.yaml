@@ -67,7 +67,7 @@ spec:
       pullSecret: regcred
 
     orderer:
-      consensus: bft
+      consensus: RAFT
       logLevel: info
       localMspId: ordererorgMSP
       tlsStatus: true
