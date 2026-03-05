@@ -10,7 +10,7 @@ metadata:
   name: anchorpeer-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "1"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   labels:
@@ -165,7 +165,9 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
-        
+          # For bevel-fabric-tools:3.x, core.yaml is at /usr/local/config/
+          [ -d /usr/local/config ] && export FABRIC_CFG_PATH=/usr/local/config
+
           version2_5=`echo $NETWORK_VERSION | grep -cE '2\.5|3\.'`
 
           if [ $version2_5 = 1 ]
