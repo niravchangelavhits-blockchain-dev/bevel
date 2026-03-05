@@ -18,7 +18,7 @@ spec:
       chart: platforms/hyperledger-fabric/charts/fabric-peernode    
   values:
     global:
-      version: 2.5.4
+      version: 3.0.0
       serviceAccountName: vault-auth
       cluster:
         provider: minikube
@@ -26,7 +26,7 @@ spec:
       vault:
         type: hashicorp
         network: fabric
-        address: http://192.168.1.4:8200
+        address: http://192.168.1.37:8200
         authPath: devorg2
         secretEngine: secretsv2
         secretPrefix: "data/devorg2"
