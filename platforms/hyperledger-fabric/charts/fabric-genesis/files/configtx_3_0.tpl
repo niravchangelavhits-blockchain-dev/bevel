@@ -113,16 +113,18 @@ Profiles:
         RequestPoolSize: 100000
         LeaderHeartbeatCount: 10
       ConsenterMapping:
+    {{- $consenterID := 1 }}
     {{- range $org := $.Values.organizations }}
       {{- range $orderer := $org.orderers }}
         {{- $split := split ":" $orderer.ordererAddress }}
-        - ID: {{ $orderer.name }}
+        - ID: {{ $consenterID }}
           Host: {{ $split._0 }}
           Port: {{ $split._1 }}
           MSPID: {{ $org.name }}MSP
           Identity: ./crypto-config/organizations/{{ $org.name }}/orderers/{{ $orderer.name }}/msp/signcerts/server.crt
           ClientTLSCert: ./crypto-config/organizations/{{ $org.name }}/orderers/{{ $orderer.name }}/tls/server.crt
           ServerTLSCert: ./crypto-config/organizations/{{ $org.name }}/orderers/{{ $orderer.name }}/tls/server.crt
+        {{- $consenterID = add $consenterID 1 }}
       {{- end }}
     {{- end }}
       Organizations:
