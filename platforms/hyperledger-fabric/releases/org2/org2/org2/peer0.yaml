@@ -66,7 +66,6 @@ spec:
 
     image:
       couchdb: ghcr.io/hyperledger/bevel-fabric-couchdb
-      couchdbTag: "2.5.4"
       peer: ghcr.io/hyperledger/bevel-fabric-peer
       alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
       pullSecret: regcred
