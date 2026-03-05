@@ -76,6 +76,7 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
+          [ -d /usr/local/config ] && export FABRIC_CFG_PATH=/usr/local/config
           source /scripts/bevel-vault.sh
 
           # Calling a function to retrieve the vault token.

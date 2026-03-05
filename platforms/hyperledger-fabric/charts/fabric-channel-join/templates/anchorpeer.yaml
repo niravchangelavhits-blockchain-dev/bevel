@@ -90,6 +90,7 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
+          [ -d /usr/local/config ] && export FABRIC_CFG_PATH=/usr/local/config
 {{- if eq .Values.global.vault.type "hashicorp" }}
 
           . /scripts/bevel-vault.sh

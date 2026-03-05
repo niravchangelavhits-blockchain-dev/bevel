@@ -34,7 +34,7 @@ RUN apk add --no-cache \
     && configtxgen --version \
     && peer version
 
-ENV FABRIC_CFG_PATH=/etc/hyperledger/fabric
+ENV FABRIC_CFG_PATH=/usr/local/config
 
 WORKDIR /opt/gopath/src/github.com/hyperledger/fabric/peer
 
