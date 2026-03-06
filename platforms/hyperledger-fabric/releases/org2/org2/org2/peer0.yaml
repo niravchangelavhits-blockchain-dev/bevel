@@ -68,7 +68,7 @@ spec:
       couchdb: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-couchdb
       peer: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-peer
       alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
-      pullSecret: regcred
+      pullSecret: ""
 
     peer:
       gossipPeerAddress: peer0.org2-net.pc3.jigs.com:443
