@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: feature/fabric-v3-bft
+    branch: unified
   secretRef:
     name: flux-system
   url: https://github.com/niravchangelavhits-blockchain-dev/bevel.git
