@@ -18,7 +18,7 @@ spec:
       chart: platforms/hyperledger-fabric/charts/fabric-peernode    
   values:
     global:
-      version: 2.5.4
+      version: 3.0.0
       serviceAccountName: vault-auth
       cluster:
         provider: minikube
@@ -65,9 +65,9 @@ spec:
         removeOrdererTlsOnDelete: true
 
     image:
-      couchdb: ghcr.io/hyperledger/bevel-fabric-couchdb
-      peer: ghcr.io/hyperledger/bevel-fabric-peer
-      alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
+      couchdb: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-couchdb
+      peer: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-peer
+      alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
       pullSecret: regcred
 
     peer:
