@@ -18,8 +18,8 @@ global:
     externalUrlSuffix: pc3.jigs.com
 
 image:
-  fabricTools: ghcr.io/hyperledger/bevel-fabric-tools
-  alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
+  fabricTools: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-tools
+  alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
   pullSecret: ""
 
 peer:
