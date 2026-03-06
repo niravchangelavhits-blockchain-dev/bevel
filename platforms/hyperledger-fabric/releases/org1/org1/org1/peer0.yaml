@@ -65,9 +65,9 @@ spec:
         removeOrdererTlsOnDelete: true
 
     image:
-      couchdb: ghcr.io/hyperledger/bevel-fabric-couchdb
-      peer: ghcr.io/hyperledger/bevel-fabric-peer
-      alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
+      couchdb: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-couchdb
+      peer: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-peer
+      alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
       pullSecret: regcred
 
     peer:
