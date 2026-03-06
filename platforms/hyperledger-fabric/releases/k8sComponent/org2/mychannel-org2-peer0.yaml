@@ -20,7 +20,7 @@ global:
 image:
   fabricTools: ghcr.io/hyperledger/bevel-fabric-tools
   alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
-  pullSecret: regcred
+  pullSecret: ""
 
 peer:
   name: peer0

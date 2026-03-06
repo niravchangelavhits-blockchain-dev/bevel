@@ -18,9 +18,9 @@ global:
     externalUrlSuffix: pc2.ankit.com
 
 image:
-  fabricTools: ghcr.io/hyperledger/bevel-fabric-tools
-  alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
-  pullSecret: regcred
+  fabricTools: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-tools
+  alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
+  pullSecret: ""
 
 peer:
   name: peer0
