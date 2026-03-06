@@ -1675,9 +1675,10 @@
           "type": "string",
           "enum": [
             "kafka",
-            "raft"
+            "raft",
+            "BFT"
           ],
-          "description": "Name of the Consensus service. Can be raft or kafka."
+          "description": "Name of the Consensus service. Can be raft, kafka, or BFT (for Fabric v3.0+)."
         }
       },
       "required": [
@@ -1742,7 +1743,8 @@
           "type": "string",
           "enum": [
             "kafka",
-            "raft"
+            "raft",
+            "BFT"
           ]
         },
         "grpc": {

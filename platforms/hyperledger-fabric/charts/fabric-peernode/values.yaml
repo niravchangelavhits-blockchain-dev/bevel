@@ -111,6 +111,10 @@ image:
   #Provide the valid image repository for fabric couchdb
   #Eg. couchdb: hyperledger/fabric-couchdb
   couchdb: ghcr.io/hyperledger/bevel-fabric-couchdb
+  # Override couchdb image tag independently of global.version.
+  # Use when bevel-fabric-couchdb does not exist for the current Fabric version
+  # (e.g. Fabric v3.0 uses couchdb image tagged 2.5.4). Empty = use global.version.
+  couchdbTag: ""
   #Provide the valid repository for fabric peer
   #Eg. peer: hyperledger/fabric-peer
   peer: ghcr.io/hyperledger/bevel-fabric-peer

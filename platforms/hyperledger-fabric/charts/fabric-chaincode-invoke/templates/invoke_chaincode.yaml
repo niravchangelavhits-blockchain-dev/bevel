@@ -88,6 +88,7 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
+          [ -d /usr/local/config ] && export FABRIC_CFG_PATH=/usr/local/config
           . /scripts/bevel-vault.sh
 
           formatCertificate () {
@@ -133,7 +134,7 @@ spec:
           
           ######################################################################
 
-          version2=`echo $NETWORK_VERSION | grep -c 2.`
+          version2=`echo $NETWORK_VERSION | grep -cE '2\.|3\.'`
           if [ $version2 = 1 ];then
             FORMAT_CERTIFICATE_PATH="/formatcertificate"
             mkdir -p ${FORMAT_CERTIFICATE_PATH}/endorsers

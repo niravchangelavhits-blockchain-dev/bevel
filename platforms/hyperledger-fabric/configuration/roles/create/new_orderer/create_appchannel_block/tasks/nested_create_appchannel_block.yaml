@@ -48,6 +48,17 @@
     VAULT_ADDR: "{{ vault.url }}"
     VAULT_TOKEN: "{{ vault.root_token }}"
 
+# For BFT v3.x: fetch orderer MSP signcert from vault for ConsenterMapping update
+- name: Fetch the MSP signcert from vault for BFT ConsenterMapping
+  shell: |
+    vault kv get -field=signcerts {{ vault.secret_path | default('secretsv2') }}/{{ network.env.type }}{{ org.name }}/orderers/{{ orderer.name }}-msp > signcert.crt
+    mkdir -p {{ build_path }}/msp-cert/{{ orderer.name }}
+    mv signcert.crt {{ build_path }}/msp-cert/{{ orderer.name }}
+  environment:
+    VAULT_ADDR: "{{ vault.url }}"
+    VAULT_TOKEN: "{{ vault.root_token }}"
+  when: "'3.' in network.version"
+
 # Create orderer-tls for tls certificate information
 - name: "adding tls certificate information"
   shell: |

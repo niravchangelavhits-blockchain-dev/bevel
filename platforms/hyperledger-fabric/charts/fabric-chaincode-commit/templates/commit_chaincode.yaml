@@ -92,6 +92,7 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
+          [ -d /usr/local/config ] && export FABRIC_CFG_PATH=/usr/local/config
           . /scripts/bevel-vault.sh
 
           formatCertificate () {
@@ -194,7 +195,7 @@ spec:
 
           . /scripts/package-manager.sh
           
-          version2_5=`echo $NETWORK_VERSION | grep -c 2.5`
+          version2_5=`echo $NETWORK_VERSION | grep -cE '2\.5|3\.'`
           if [ $version2_5 = 1 ]
           then
             GOPATH="/root/go"

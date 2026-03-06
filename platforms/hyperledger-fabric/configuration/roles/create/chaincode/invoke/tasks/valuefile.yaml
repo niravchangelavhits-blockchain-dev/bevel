@@ -19,7 +19,7 @@
     kubernetes: "{{ org.k8s }}"
     component_name: "commitcc-{{ chaincode.name }}-{{ chaincode.version }}-{{ chaincode.sequence | default('1') }}"
   when: 
-    - chaincode is defined and '2.' in network.version
+    - chaincode is defined and ('2.' in network.version or '3.' in network.version)
     - add_new_org is not defined or add_new_org == 'false'
 
 # Check or Wait if approve-chaincode is already run for v.2.x when adding a new org
@@ -32,7 +32,7 @@
     kubernetes: "{{ org.k8s }}"
     component_name: "approvecc-{{ peer.name }}-{{ chaincode.name }}-{{ chaincode.version }}-{{ chaincode.sequence | default('1') }}"
   when: 
-    - chaincode is defined and '2.' in network.version 
+    - chaincode is defined and ('2.' in network.version or '3.' in network.version) 
     - add_new_org is defined and add_new_org == 'true'
 
 # Check or Wait if install-chaincode is already run for v.1.4.x

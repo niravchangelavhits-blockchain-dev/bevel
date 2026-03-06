@@ -19,7 +19,9 @@ metadata:
     app.kubernetes.io/managed-by: helm
 data:
   configtx.yaml: |-
-{{- if eq ($.Values.global.version | trunc 3) "2.5" }}
+{{- if eq ($.Values.global.version | trunc 3) "3.0" }}
+    {{ tpl (.Files.Get "files/configtx_3_0.tpl") . | nindent 8 }}
+{{- else if eq ($.Values.global.version | trunc 3) "2.5" }}
     {{ tpl (.Files.Get "files/configtx_2_5.tpl") . | nindent 8 }}
 {{- else }}
     {{ tpl (.Files.Get "files/configtx_2_2.tpl") . | nindent 8 }}

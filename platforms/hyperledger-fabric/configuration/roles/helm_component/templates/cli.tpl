@@ -34,7 +34,7 @@ spec:
         tls: false
 
     image:
-      fabricTools: {{ docker_url }}/{{ fabric_tools_image }}
+      fabricTools: {{ docker_url }}/bevel-fabric-tools
       alpineUtils: {{ docker_url }}/bevel-alpine:{{ bevel_alpine_version }}
 {% if network.docker.username is defined and network.docker.password is defined %}
       pullSecret: regcred

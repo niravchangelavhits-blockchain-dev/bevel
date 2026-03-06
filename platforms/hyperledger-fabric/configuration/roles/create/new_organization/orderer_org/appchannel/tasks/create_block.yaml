@@ -56,7 +56,7 @@
 ############################################################################################
 # This task fetch , modify, update and copy the configuration block from the blockchain with the new orderer information
 # from orderer cli
-- name: fetch, modify, sign and copy the configuration block from the blockchain
+- name: fetch, modify, sign and copy the configuration block from the blockchain (Raft/Kafka)
   shell: |
     export PEER_CLI=$(KUBECONFIG={{ org.k8s.config_file }} kubectl get po -n {{ component_ns }} | grep "cli" | head -n 1 | awk '{print $1}')
     KUBECONFIG={{ kubernetes.config_file }} kubectl exec -n {{ component_ns }} ${PEER_CLI} -- peer channel fetch config {{ channel_name }}_config_block.pb -o {{ ordererAddress }} -c {{ channel_name }} --tls --cafile ${ORDERER_CA}
@@ -69,7 +69,29 @@
     KUBECONFIG={{ kubernetes.config_file }} kubectl exec -n {{ component_ns }} ${PEER_CLI} -- peer channel signconfigtx -f {{ channel_name }}_update_in_envelope.pb
     KUBECONFIG={{ kubernetes.config_file }} kubectl cp {{ component_ns }}/${PEER_CLI}:/opt/gopath/src/github.com/hyperledger/fabric/peer/{{ channel_name }}_update_in_envelope.pb {{ build_path }}/{{ channel_name }}_config_update.pb
   environment:
-    ORDERER_CA: "/opt/gopath/src/github.com/hyperledger/fabric/crypto/orderer/tls/ca.crt"    
-  vars: 
+    ORDERER_CA: "/opt/gopath/src/github.com/hyperledger/fabric/crypto/orderer/tls/ca.crt"
+  vars:
     kubernetes: "{{ org.k8s }}"
     ordererAddress: "{{ participant.ordererAddress }}"
+  when: "'3.' not in network.version"
+
+# For BFT v3.x: fetch and modify config block with ConsenterMapping (MSP signcerts + TLS)
+- name: fetch, modify, sign and copy the configuration block from the blockchain (BFT)
+  shell: |
+    export PEER_CLI=$(KUBECONFIG={{ org.k8s.config_file }} kubectl get po -n {{ component_ns }} | grep "cli" | head -n 1 | awk '{print $1}')
+    KUBECONFIG={{ kubernetes.config_file }} kubectl exec -n {{ component_ns }} ${PEER_CLI} -- peer channel fetch config {{ channel_name }}_config_block.pb -o {{ ordererAddress }} -c {{ channel_name }} --tls --cafile ${ORDERER_CA}
+    KUBECONFIG={{ kubernetes.config_file }} kubectl cp {{ build_path }}/update-channel-script.sh {{ component_ns }}/${PEER_CLI}:/opt/gopath/src/github.com/hyperledger/fabric/peer/update_consenter.sh
+    KUBECONFIG={{ kubernetes.config_file }} kubectl cp {{ build_path }}/channel-artifacts/{{ channel_name }}.json {{ component_ns }}/${PEER_CLI}:/opt/gopath/src/github.com/hyperledger/fabric/peer/config.json
+    KUBECONFIG={{ kubernetes.config_file }} kubectl cp {{ build_path }}/channel-artifacts/{{ channel_name }}-orderer {{ component_ns }}/${PEER_CLI}:/opt/gopath/src/github.com/hyperledger/fabric/peer/orderer
+    KUBECONFIG={{ kubernetes.config_file }} kubectl cp {{ build_path }}/channel-artifacts/{{ channel_name }}-orderer-tls {{ component_ns }}/${PEER_CLI}:/opt/gopath/src/github.com/hyperledger/fabric/peer/orderer-tls
+    KUBECONFIG={{ kubernetes.config_file }} kubectl cp {{ build_path }}/channel-artifacts/{{ channel_name }}-orderer-msp {{ component_ns }}/${PEER_CLI}:/opt/gopath/src/github.com/hyperledger/fabric/peer/orderer-msp
+    KUBECONFIG={{ kubernetes.config_file }} kubectl exec -n {{ component_ns }} ${PEER_CLI} -- chmod 777 ./update_consenter.sh
+    KUBECONFIG={{ kubernetes.config_file }} kubectl exec -n {{ component_ns }} ${PEER_CLI} -- sh ./update_consenter.sh
+    KUBECONFIG={{ kubernetes.config_file }} kubectl exec -n {{ component_ns }} ${PEER_CLI} -- peer channel signconfigtx -f {{ channel_name }}_update_in_envelope.pb
+    KUBECONFIG={{ kubernetes.config_file }} kubectl cp {{ component_ns }}/${PEER_CLI}:/opt/gopath/src/github.com/hyperledger/fabric/peer/{{ channel_name }}_update_in_envelope.pb {{ build_path }}/{{ channel_name }}_config_update.pb
+  environment:
+    ORDERER_CA: "/opt/gopath/src/github.com/hyperledger/fabric/crypto/orderer/tls/ca.crt"
+  vars:
+    kubernetes: "{{ org.k8s }}"
+    ordererAddress: "{{ participant.ordererAddress }}"
+  when: "'3.' in network.version"

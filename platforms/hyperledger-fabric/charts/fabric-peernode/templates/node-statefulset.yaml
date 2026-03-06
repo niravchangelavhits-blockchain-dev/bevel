@@ -213,7 +213,7 @@ spec:
           subPath: bevel-vault.sh
       containers:
       - name: couchdb
-        image: {{ .Values.image.couchdb }}:{{ .Values.global.version }}
+        image: {{ .Values.image.couchdb }}:{{ .Values.image.couchdbTag | default (ternary "2.5.4" .Values.global.version (hasPrefix "3" .Values.global.version)) }}
         imagePullPolicy: IfNotPresent
         command: ["sh", "-c"]
         args:

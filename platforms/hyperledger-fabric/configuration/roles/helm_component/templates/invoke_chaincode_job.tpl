@@ -57,7 +57,7 @@ spec:
       endorsementpolicies:  {{ component_chaincode.endorsements | default('') | quote }}
     channel:
       name: {{ item.channel_name | lower }}
-{% if '2.' in network.version %}
+{% if '2.' in network.version or '3.' in network.version %}
     endorsers:
       creator: {{ namespace }}
       name: {% for name in endorsers_list %}{%- for key, value in name.items() %}{% if key == 'name' %} {{ value }} {% endif %}{%- endfor %}{% endfor %}

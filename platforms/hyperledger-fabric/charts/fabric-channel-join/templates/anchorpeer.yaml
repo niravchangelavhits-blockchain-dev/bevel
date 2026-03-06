@@ -10,7 +10,7 @@ metadata:
   name: anchorpeer-{{ .Release.Name }}
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-weight": "1"
     "helm.sh/hook-delete-policy": "before-hook-creation"
   labels:
@@ -59,7 +59,7 @@ spec:
           items:
             - key: cacert
               path: orderer.crt
-      {{- if ne (.Values.global.version | trunc 3) "2.5" }}
+      {{- if and (ne (.Values.global.version | trunc 3) "2.5") (ne (.Values.global.version | trunc 3) "3.0") }}
       - name: anchorpeer-artifacts
         configMap:
           name: {{ .Release.Name }}-anchor-artifacts
@@ -90,6 +90,7 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
+          [ -d /usr/local/config ] && export FABRIC_CFG_PATH=/usr/local/config
 {{- if eq .Values.global.vault.type "hashicorp" }}
 
           . /scripts/bevel-vault.sh
@@ -164,8 +165,10 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
-        
-          version2_5=`echo $NETWORK_VERSION | grep -c 2.5`
+          # For bevel-fabric-tools:3.x, core.yaml is at /usr/local/config/
+          [ -d /usr/local/config ] && export FABRIC_CFG_PATH=/usr/local/config
+
+          version2_5=`echo $NETWORK_VERSION | grep -cE '2\.5|3\.'`
 
           if [ $version2_5 = 1 ]
           then
@@ -222,7 +225,7 @@ spec:
         - name: orderer-tls-cacert
           mountPath: /opt/gopath/src/github.com/hyperledger/fabric/orderer/tls/orderer.crt
           subPath: orderer.crt
-        {{- if ne (.Values.global.version | trunc 3) "2.5" }}
+        {{- if and (ne (.Values.global.version | trunc 3) "2.5") (ne (.Values.global.version | trunc 3) "3.0") }}
         - name: anchorpeer-artifacts
           mountPath: /opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts
           readOnly: true

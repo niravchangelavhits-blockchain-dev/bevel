@@ -158,6 +158,8 @@ spec:
         args:
         - |-
           #!/usr/bin/env sh
+          # For bevel-fabric-tools:3.x, core.yaml is at /usr/local/config/
+          [ -d /usr/local/config ] && export FABRIC_CFG_PATH=/usr/local/config
           echo "Joining Channel ${CHANNEL_NAME}"
           tls_status=${CORE_PEER_TLS_ENABLED}
           if [ "$tls_status" = "true" ]
