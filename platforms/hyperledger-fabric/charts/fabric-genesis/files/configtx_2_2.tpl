@@ -77,7 +77,7 @@ Channel: &ChannelDefaults
     <<: *ChannelCapabilities
 
 Orderer: &OrdererDefaults
-{{- if eq $.Values.consensus "raft" }}
+{{- if eq ($.Values.consensus | lower) "raft" }}
   OrdererType: etcdraft
   EtcdRaft:
     Consenters:
@@ -96,8 +96,8 @@ Orderer: &OrdererDefaults
     MaxMessageCount: 10
     AbsoluteMaxBytes: 98 MB
     PreferredMaxBytes: 1024 KB
-{{- if eq $.Values.consensus "kafka" }}
-  OrdererType: {{ $.Values.consensus }}
+{{- if eq ($.Values.consensus | lower) "kafka" }}
+  OrdererType: {{ $.Values.consensus | lower }}
   Kafka:
     Brokers:
   {{- range $.Values.kafka.brokers }}

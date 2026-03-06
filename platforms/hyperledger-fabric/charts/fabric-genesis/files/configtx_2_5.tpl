@@ -95,7 +95,7 @@ Profiles:
 {{- range $channel := $.Values.channels }}
   {{ $channel.name }}:
     <<: *ChannelDefaults
-  {{- if eq $.Values.consensus "raft" }}
+  {{- if eq ($.Values.consensus | lower) "raft" }}
     Orderer:
       <<: *OrdererDefaults
       OrdererType: etcdraft
