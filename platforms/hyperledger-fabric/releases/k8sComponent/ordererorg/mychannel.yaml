@@ -1,5 +1,5 @@
 global:
-  version: 3.0.0
+  version: 2.5.4
   serviceAccountName: vault-auth
   cluster:
     provider: minikube
@@ -18,9 +18,9 @@ global:
     externalUrlSuffix: pc1.nirav.com
 
 image:
-  fabricTools: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-tools
-  alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
-  pullSecret: ""
+  fabricTools: ghcr.io/hyperledger/bevel-fabric-tools
+  alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
+  pullSecret: regcred
 
 orderers:
   - name: orderer1
@@ -29,8 +29,6 @@ orderers:
     adminAddress: orderer2.ordererorg-net:7055
   - name: orderer3
     adminAddress: orderer3.ordererorg-net:7055
-  - name: orderer4
-    adminAddress: orderer4.ordererorg-net:7055
 
 addOrderer: false
 
