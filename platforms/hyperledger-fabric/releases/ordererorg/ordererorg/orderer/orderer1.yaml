@@ -62,8 +62,8 @@ spec:
         removeOrdererTlsOnDelete: true
 
     image:
-      orderer: ghcr.io/hyperledger/bevel-fabric-orderer
-      alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
+      orderer: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-orderer
+      alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
       pullSecret: regcred
 
     orderer:
