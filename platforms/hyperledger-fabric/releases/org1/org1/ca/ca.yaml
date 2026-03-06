@@ -45,8 +45,8 @@ spec:
         enabled: false
 
     image:
-      alpineUtils: ghcr.io/hyperledger/bevel-alpine:latest
-      ca: ghcr.io/hyperledger/bevel-fabric-ca:latest
+      alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
+      ca: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-ca:latest
       pullSecret: regcred
 
     server:
