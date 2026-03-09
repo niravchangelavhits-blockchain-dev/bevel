@@ -6,6 +6,9 @@ metadata:
   annotations:
     fluxcd.io/automated: "false"
 spec:
+  dependsOn:
+    - name: ca
+      namespace: {{ component_ns }}
   interval: 1m
   releaseName: {{ component_name | replace('_','-') }}
   chart:

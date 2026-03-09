@@ -69,11 +69,10 @@
         loop_var: org
       when: org.services.ca is defined
 
-    #Creating a pause so that the client certificates are valid
-    # You can continue if the CA-server pods are running for more than 5 minutes
+    # Brief pause for CA certificate validity window (reduced from 6min with dependsOn)
     - pause:
-        prompt: "Sleeping... so that the client certificates are valid"
-        minutes: 6
+        prompt: "Brief wait for CA certificate validity window"
+        minutes: 1
 
     # This role creates value file for zk-kafka (if kafka consensus is chosen) and orderer
     - name: Create all orderers

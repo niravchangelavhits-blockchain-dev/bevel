@@ -51,6 +51,28 @@ spec:
         - name: {{ .Values.image.pullSecret }}
       {{- end }}
       initContainers:
+      - name: wait-for-vault
+        image: {{ .Values.image.alpineUtils }}
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c"]
+        args:
+        - |
+          #!/usr/bin/env sh
+          echo "Waiting for Vault to be reachable..."
+          COUNTER=1
+          MAX_RETRIES=30
+          while [ $COUNTER -le $MAX_RETRIES ]; do
+            if wget -q --spider --timeout=5 {{ .Values.global.vault.address }}/v1/sys/health 2>/dev/null || \
+               curl -fsS --max-time 5 {{ .Values.global.vault.address }}/v1/sys/health >/dev/null 2>&1; then
+              echo "Vault is reachable"
+              exit 0
+            fi
+            echo "Vault not ready yet (attempt $COUNTER/$MAX_RETRIES), sleeping 10s..."
+            sleep 10
+            COUNTER=$((COUNTER + 1))
+          done
+          echo "ERROR: Vault did not become reachable after $MAX_RETRIES attempts"
+          exit 1
       - name: ca-certs-init
         image: {{ .Values.image.alpineUtils }}
         imagePullPolicy: IfNotPresent
