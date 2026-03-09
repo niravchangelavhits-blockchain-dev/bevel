@@ -26,7 +26,7 @@ spec:
       vault:
         type: hashicorp
         network: fabric
-        address: http://192.168.1.66:8200
+        address: http://192.168.1.37:8200
         authPath: devorg1
         secretEngine: secretsv2
         secretPrefix: "data/devorg1"
@@ -34,7 +34,7 @@ spec:
         tls: false
       proxy:
         provider: haproxy
-        externalUrlSuffix: pc2.ankit.com
+        externalUrlSuffix: pc2.jigs.com
 
     storage:
       enabled: True
@@ -49,7 +49,7 @@ spec:
     certs:
       generateCertificates: true
       orgData:
-        caAddress: ca.org1-net.pc2.ankit.com
+        caAddress: ca.org1-net.pc2.jigs.com
         caAdminUser: org1-admin
         caAdminPassword: org1-adminpw
         orgName: org1
@@ -68,10 +68,10 @@ spec:
       couchdb: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-couchdb
       peer: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-peer
       alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
-      pullSecret: ""
+      pullSecret: regcred
 
     peer:
-      gossipPeerAddress: peer0.org1-net.pc2.ankit.com:443
+      gossipPeerAddress: peer0.org1-net.pc2.jigs.com:443
       logLevel: info
       localMspId: org1MSP
       tlsStatus: true
