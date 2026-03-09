@@ -34,7 +34,7 @@ spec:
         tls: false
       proxy:
         provider: haproxy
-        externalUrlSuffix: pc3.jigs.com
+        externalUrlSuffix: pc3.ankit.com
 
     storage:
       enabled: True
@@ -49,7 +49,7 @@ spec:
     certs:
       generateCertificates: true
       orgData:
-        caAddress: ca.org2-net.pc3.jigs.com
+        caAddress: ca.org2-net.pc3.ankit.com
         caAdminUser: org2-admin
         caAdminPassword: org2-adminpw
         orgName: org2
@@ -71,7 +71,7 @@ spec:
       pullSecret: regcred
 
     peer:
-      gossipPeerAddress: peer0.org2-net.pc3.jigs.com:443
+      gossipPeerAddress: peer0.org2-net.pc3.ankit.com:443
       logLevel: info
       localMspId: org2MSP
       tlsStatus: true
