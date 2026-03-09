@@ -64,7 +64,7 @@ spec:
     image:
       orderer: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-orderer
       alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
-      pullSecret: ""
+      pullSecret: regcred
 
     orderer:
       consensus: BFT
