@@ -20,7 +20,7 @@ global:
 image:
   alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
   fabricTools: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-tools
-  pullSecret: ""
+  pullSecret: regcred
 
 organizations:
   - name: ordererorg
