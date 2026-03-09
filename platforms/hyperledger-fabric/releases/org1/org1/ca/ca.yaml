@@ -22,11 +22,11 @@ spec:
       cluster:
         provider: minikube
         cloudNativeServices: false
-        kubernetesUrl: https://192.168.1.66:6443
+        kubernetesUrl: https://192.168.1.37:6443
       vault:
         type: hashicorp
         network: fabric
-        address: http://192.168.1.66:8200
+        address: http://192.168.1.37:8200
         authPath: devorg1
         secretEngine: secretsv2
         secretPrefix: "data/devorg1"
@@ -34,7 +34,7 @@ spec:
         tls: false
       proxy:
         provider: haproxy
-        externalUrlSuffix: pc2.ankit.com
+        externalUrlSuffix: pc2.jigs.com
 
     storage:
       size: 512Mi
