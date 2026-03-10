@@ -1,0 +1,68 @@
+global:
+  version: 3.0.0
+  serviceAccountName: vault-auth
+  cluster:
+    provider: minikube
+    cloudNativeServices: false
+  vault:
+    type: hashicorp
+    network: fabric
+    address: http://192.168.1.51:8200
+    authPath: devordererorg
+    secretEngine: secretsv2
+    secretPrefix: "data/devordererorg"
+    role: vault-role
+    tls: false
+  proxy:
+    provider: haproxy
+    externalUrlSuffix: pc1.nirav.com
+
+image:
+  alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
+  fabricTools: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-tools
+  pullSecret: regcred
+
+organizations:
+  - name: ordererorg
+    orderers:
+    - name: orderer1
+      ordererAddress: orderer1.ordererorg-net.pc1.nirav.com:443
+    - name: orderer2
+      ordererAddress: orderer2.ordererorg-net.pc1.nirav.com:443
+    - name: orderer3
+      ordererAddress: orderer3.ordererorg-net.pc1.nirav.com:443
+    - name: orderer4
+      ordererAddress: orderer4.ordererorg-net.pc1.nirav.com:443
+    peers:
+  - name: org1
+    peers:
+    - name: peer0
+      peerAddress: peer0.org1-net.pc2.ankit.com:443
+  - name: org2
+    peers:
+    - name: peer0
+      peerAddress: peer0.org2-net.pc3.jigs.com:443
+
+consensus: BFT
+
+
+channels:
+ 
+ 
+  - name: mychannel
+    consortium: MyConsortium
+    orderers: 
+      - ordererorg
+    participants:
+      - org1
+      - org2
+
+settings:
+  generateGenesis: True 
+  removeConfigMapOnDelete: false
+
+add_new_org: false
+newOrgs:
+  - name: ordererorg
+  - name: org1
+  - name: org2
