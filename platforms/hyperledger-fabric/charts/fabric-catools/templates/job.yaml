@@ -103,6 +103,30 @@ spec:
       - name: package-manager
         configMap:
           name: package-manager
+      initContainers:
+      - name: wait-for-ca
+        image: "{{ .Values.image.caTools }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["bash", "-c"]
+        args:
+        - |
+          echo "Waiting for CA to be Ready..."
+          COUNTER=1
+          MAX_RETRIES=60
+          CA_HOST="ca.{{ .Release.Namespace }}"
+          CA_PORT="7054"
+
+          while [ $COUNTER -le $MAX_RETRIES ]; do
+            if echo > /dev/tcp/$CA_HOST/$CA_PORT 2>/dev/null; then
+              echo "CA is reachable and ready!"
+              exit 0
+            fi
+            echo "CA not ready yet (attempt $COUNTER/$MAX_RETRIES), sleeping 10s..."
+            sleep 10
+            COUNTER=$((COUNTER + 1))
+          done
+          echo "ERROR: CA did not become ready after $MAX_RETRIES attempts"
+          exit 1
       containers:
         - name: generate-certs
           image: "{{ .Values.image.caTools }}"
