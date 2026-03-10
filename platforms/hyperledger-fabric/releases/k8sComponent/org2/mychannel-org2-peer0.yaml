@@ -1,0 +1,35 @@
+global:
+  version: 3.0.0
+  serviceAccountName: vault-auth
+  cluster:
+    provider: minikube
+    cloudNativeServices: false
+  vault:
+    type: hashicorp
+    network: fabric
+    address: http://192.168.1.37:8200
+    authPath: devorg2
+    secretEngine: secretsv2
+    secretPrefix: "data/devorg2"
+    role: vault-role
+    tls: false
+  proxy:
+    provider: haproxy
+    externalUrlSuffix: pc3.jigs.com
+
+image:
+  fabricTools: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-tools
+  alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
+  pullSecret: regcred
+
+peer:
+  name: peer0
+  type: anchor
+  address: peer0.org2-net.pc3.jigs.com:443
+  localMspId: org2MSP
+  logLevel: debug
+  tlsStatus: true
+  channelName: mychannel  
+  ordererAddress: orderer1.ordererorg-net.pc1.nirav.com:443
+  addPeerValue: false
+  addnewOrgValue: false
