@@ -1,0 +1,63 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ca
+  namespace: org2-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  interval: 1m
+  releaseName: ca
+  chart:
+    spec:
+      interval: 1m
+      sourceRef:
+        kind: GitRepository
+        name: flux-dev
+        namespace: flux-dev
+      chart: platforms/hyperledger-fabric/charts/fabric-ca-server   
+  values:
+    global:
+      serviceAccountName: vault-auth
+      cluster:
+        provider: minikube
+        cloudNativeServices: false
+        kubernetesUrl: https://192.168.1.37:6443
+      vault:
+        type: hashicorp
+        network: fabric
+        address: http://192.168.1.37:8200
+        authPath: devorg2
+        secretEngine: secretsv2
+        secretPrefix: "data/devorg2"
+        role: vault-role
+        tls: false
+      proxy:
+        provider: haproxy
+        externalUrlSuffix: pc3.jigs.com
+
+    storage:
+      size: 512Mi
+      reclaimPolicy: "Delete"
+      volumeBindingMode: WaitForFirstConsumer
+      provisioner: "rancher.io/local-path"
+      allowedTopologies:
+        enabled: false
+
+    image:
+      alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
+      ca: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-ca:latest
+      pullSecret: regcred
+
+    server:
+      removeCertsOnDelete: true
+      tlsStatus: true
+      adminUsername: org2-admin
+      adminPassword: org2-adminpw
+      subject: "/C=US/ST=Texas/L=Dallas/O=Org2"
+      clusterIpPort: 7054
+
+    labels:
+      service:
+      pvc:
+      deployment:
