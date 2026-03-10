@@ -41,33 +41,19 @@ spec:
       - name: wait-for-ca
         image: "{{ .Values.image.caTools }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["sh", "-c"]
+        command: ["bash", "-c"]
         args:
         - |
-          #!/usr/bin/env sh
           echo "Waiting for CA to be Ready..."
           COUNTER=1
           MAX_RETRIES=60
           CA_HOST="ca.{{ .Release.Namespace }}"
           CA_PORT="7054"
 
-          # First wait for CA pod to exist and be ready
           while [ $COUNTER -le $MAX_RETRIES ]; do
-            # Check if CA pod is ready
-            CA_POD=$(kubectl get pods -n {{ .Release.Namespace }} -l app=ca -o jsonpath='{.items[?(@.status.phase=="Running")].metadata.name}' 2>/dev/null | awk '{print $1}')
-            if [ -n "$CA_POD" ]; then
-              # Check if pod is actually ready (all containers ready)
-              READY=$(kubectl get pod $CA_POD -n {{ .Release.Namespace }} -o jsonpath='{.status.containerStatuses[0].ready}' 2>/dev/null)
-              if [ "$READY" = "true" ]; then
-                echo "CA pod $CA_POD is ready"
-                # Now check if CA is actually responding
-                echo "Checking if CA is responding..."
-                if wget -q --spider --timeout=5 http://$CA_HOST:$CA_PORT/ 2>/dev/null || \
-                   wget -q --spider --timeout=5 https://$CA_HOST:$CA_PORT/ 2>/dev/null; then
-                  echo "CA is reachable and ready!"
-                  exit 0
-                fi
-              fi
+            if echo > /dev/tcp/$CA_HOST/$CA_PORT 2>/dev/null; then
+              echo "CA is reachable and ready!"
+              exit 0
             fi
             echo "CA not ready yet (attempt $COUNTER/$MAX_RETRIES), sleeping 10s..."
             sleep 10
