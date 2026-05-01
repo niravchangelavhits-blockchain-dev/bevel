@@ -37,7 +37,7 @@ spec:
         tls: false
       proxy:
         provider: haproxy
-        externalUrlSuffix: pc2.jigs.com
+        externalUrlSuffix: pc2.uv.com
 
     storage:
       enabled: True
@@ -52,7 +52,7 @@ spec:
     certs:
       generateCertificates: true
       orgData:
-        caAddress: ca.org1-net.pc2.jigs.com
+        caAddress: ca.org1-net.pc2.uv.com
         caAdminUser: org1-admin
         caAdminPassword: org1-adminpw
         orgName: org1
@@ -74,7 +74,7 @@ spec:
       pullSecret: regcred
 
     peer:
-      gossipPeerAddress: peer0.org1-net.pc2.jigs.com:443
+      gossipPeerAddress: peer0.org1-net.pc2.uv.com:443
       logLevel: info
       localMspId: org1MSP
       tlsStatus: true
