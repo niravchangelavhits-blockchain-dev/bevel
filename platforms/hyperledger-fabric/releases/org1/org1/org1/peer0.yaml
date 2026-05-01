@@ -75,6 +75,10 @@ spec:
       pullSecret: regcred
 
     peer:
+      image:
+        fabricTools: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-tools
+        alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
+        pullSecret: regcred
       gossipPeerAddress: peer0.org1-net.pc2.uv.com:443
       logLevel: info
       localMspId: org1MSP
