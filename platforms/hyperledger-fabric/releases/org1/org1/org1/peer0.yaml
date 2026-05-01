@@ -70,6 +70,7 @@ spec:
     image:
       couchdb: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-couchdb
       peer: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-peer
+      fabricTools: ghcr.io/niravchangelavhits-blockchain-dev/bevel-fabric-tools
       alpineUtils: ghcr.io/niravchangelavhits-blockchain-dev/bevel-alpine:latest
       pullSecret: regcred
 
